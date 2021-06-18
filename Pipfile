@@ -8,6 +8,8 @@ fastapi = "*"
 uvicorn = "*"
 gunicorn = "*"
 websockets = "*"
+pytest = "*"
+requests = "*"
 
 [dev-packages]
 
