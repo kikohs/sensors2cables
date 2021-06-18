@@ -84,6 +84,7 @@ async def get_data(deviceid: str):
 
 @app.websocket("/ws/{deviceid}")
 async def websocket_endpoint(websocket: WebSocket, deviceid: str):
+    deviceid = deviceid.lower()
     if deviceid not in app.state.sensors:
         await websocket.close()
         return
@@ -91,7 +92,7 @@ async def websocket_endpoint(websocket: WebSocket, deviceid: str):
         await websocket.accept()
         while True:
             if app.state.sensors[deviceid]['has_changed']:
-                data = await get_data()
+                data = await get_data(deviceid)
                 await websocket.send_json(data)
                 app.state.sensors[deviceid]['has_changed'] = False
             else:
@@ -118,8 +119,8 @@ async def check_remove_old_data(duration=DELETE_DATA_TIME):
         return
  
     # Wait and call again
-    await asyncio.sleep(DELETE_POLL_SPEED)
-    await check_remove_old_data()
+    # await asyncio.sleep(DELETE_POLL_SPEED)
+    # await check_remove_old_data()
 
 
 @app.on_event("startup")
